@@ -57,7 +57,12 @@ function validarFormulario(e){
                             icon: 'success',
                             title: 'Usuario Creado',
                             text: 'El usuario fue creado correctamente',
-                          });
+                          })
+                          .then(resultado => {
+                            if(resultado.value){
+                                window.location.href = "login.php";
+                            }
+                          })
 
                     }else if(respuesta.tipo === "login"){
                         //Si el usuario ya existe

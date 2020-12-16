@@ -77,8 +77,10 @@
 
                             <?php endforeach; ?>
 
-
-                        <?php 
+                        <?php else:
+                        //No hay tareas.
+                        echo "<p class='lista-vacia'>No hay tareas en este proyecto.</p>";
+                         
                         endif;    
                     else:
                         //No hay tareas.
