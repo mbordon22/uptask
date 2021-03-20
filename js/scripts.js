@@ -24,6 +24,8 @@ function nuevoProyecto(e){
     e.preventDefault();
 
     console.log("Presionaste para crear un nuevo proyecto");
+    const idUsuario = document.querySelector("#idUsuario").value;
+    console.log(idUsuario);
 
     //Crea un <input> para el nuevo proyecto
     var nuevoProyecto = document.createElement("li");
@@ -39,19 +41,20 @@ function nuevoProyecto(e){
         var tecla = e.which || e.keyCode;
 
         if(tecla === 13){
-            guardarProyectoDB(inputNuevoProyecto.value);
+            guardarProyectoDB(inputNuevoProyecto.value, idUsuario);
             listaProyectos.removeChild(nuevoProyecto);
         }
     });
 }
 
-function guardarProyectoDB(nombreProyecto){
+function guardarProyectoDB(nombreProyecto, idUsuario){
     //Crear llamado a ajax
     var xhr = new XMLHttpRequest();
 
     //Enviar datos por formdata
     var datos = new FormData();
     datos.append("proyecto", nombreProyecto);
+    datos.append("idUsuario", idUsuario);
     datos.append("accion", "crear");
     
     //Abrir la conexion

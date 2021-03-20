@@ -3,6 +3,7 @@
     include_once("includes/funciones/funciones.php");
     include_once("includes/templates/header.php"); 
 
+    //Si viene la variable por medio del GET cerramos sesión
     if(isset($_GET["cerrar_sesion"])){
         $_SESSION = array();
     }
