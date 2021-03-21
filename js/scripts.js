@@ -3,10 +3,10 @@ eventListener();
 var listaProyectos = document.querySelector("ul#proyectos");
 
 function eventListener() {
-    //Progreso del proyecto al ingresar
-    document.addEventListener("DOMContentLoaded", progresoProyecto);
 
-    document.querySelector("#crearProyecto").addEventListener("click", guardarProyectoDB);
+    if(document.querySelector("#crearProyecto")){
+        document.querySelector("#crearProyecto").addEventListener("click", guardarProyectoDB);
+    }
 
     //Boton para agregar nueva Tarea
     if (document.querySelector(".nueva-tarea")) {
@@ -14,10 +14,17 @@ function eventListener() {
     }
 
     //Botones para las acciones de las tareas
-    document.querySelector(".listado-pendientes").addEventListener("click", accionesTarea);
-
-    //Eliminar proyecto
-    document.querySelector("#borrarProyecto").addEventListener("click", borrarProyecto);
+    if(document.querySelector(".listado-pendientes")){
+        document.querySelector(".listado-pendientes").addEventListener("click", accionesTarea);
+    }
+    
+    if(document.querySelector("#borrarProyecto")){
+        //Eliminar proyecto
+        document.querySelector("#borrarProyecto").addEventListener("click", borrarProyecto);
+        //Progreso del proyecto al ingresar
+        document.addEventListener("DOMContentLoaded", progresoProyecto);
+    }
+    
 }
 
 
@@ -312,15 +319,15 @@ function EliminarTareaBD(tarea) {
 function progresoProyecto() {
     //Seleccionamos la cantidad de tareas
     const cantidadTareas = document.querySelectorAll(".tarea");
-    console.log(cantidadTareas.length);
+    /* console.log(cantidadTareas.length); */
 
     //Seleccionamos la cantidad de tareas terminadas
     const cantidadTareasTerminadas = document.querySelectorAll("i.completo");
-    console.log(cantidadTareasTerminadas.length);
+    /* console.log(cantidadTareasTerminadas.length); */
 
     //Progreso actual
     const progresoActual = Math.round((cantidadTareasTerminadas.length / cantidadTareas.length) * 100);
-    console.log(progresoActual);
+    /* console.log(progresoActual); */
 
     //Actualizamos la barra
     document.querySelector("#porcentaje").style.width = progresoActual + "%";

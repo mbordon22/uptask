@@ -47,14 +47,6 @@
                 <input type="submit" class="boton nueva-tarea" value="Agregar">
             </div>
         </form>
-    
-    <?php else:
-
-        echo "<p> Debes elegir un Proyecto de la izquierda para agregar Tareas </p>";
-    
-        endif;?>
-        
- 
 
         <h2>Listado de tareas:</h2>
 
@@ -104,6 +96,13 @@
         <button class="btn btn-danger" id="borrarProyecto">
             Eliminar Proyecto
         </button>
+
+
+        <?php else:
+
+            echo "<p class='mensaje-sin-proyectos'> Debes elegir o crear un Proyecto para comenzar a agregar Tareas </p>";
+
+        endif;?>
     </main>
 </div><!--.contenedor-->
 

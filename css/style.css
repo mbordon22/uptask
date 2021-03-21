@@ -257,3 +257,9 @@ body.index {
     top: 8%;
     right: 2%;
 }
+
+.mensaje-sin-proyectos{
+    text-align: center;
+    font-size: 2rem;
+    margin-top: 3rem;
+}
