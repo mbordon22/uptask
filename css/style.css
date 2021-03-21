@@ -249,3 +249,11 @@ body.index {
     background-size: 1rem 1rem;
     transition:  width .5s ease-in-out;
 }
+
+
+/* Boton eliminar proyecto */
+#borrarProyecto{
+    position: fixed;
+    top: 8%;
+    right: 2%;
+}

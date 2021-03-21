@@ -1,7 +1,8 @@
 <?php 
-$accion = $_REQUEST["accion"];
-$idUsuario = $_REQUEST["idUsuario"];
-$proyecto = $_REQUEST["proyecto"];
+$accion = isset($_REQUEST["accion"]) ? $_REQUEST["accion"]  : "";
+$idUsuario = isset($_REQUEST["idUsuario"]) ? $_REQUEST["idUsuario"]  : "";
+$proyecto = isset($_REQUEST["proyecto"]) ? $_REQUEST["proyecto"]  : "";
+$idProyecto = isset($_REQUEST["idProyecto"]) ? $_REQUEST["idProyecto"] : "";
 
 if($accion == "crear"){
     //Incluimos la conexion a la base de datos
@@ -46,15 +47,19 @@ if($accion == "crear"){
     }
 }
 
+//Borrar proyecto
 else if($accion == "borrar"){
+
     //Incluimos la conexion a la base de datos
     include_once("../funciones/conexion.php");
     
     try{
         //Comprobamos si hay tareas pendientes en el proyecto
-        $tareasPendientes =  $conn->prepare(" SELECT * FROM tareas WHERE id_proyecto = ${idProyecto} ");
+        $tareasPendientes =  $conn->query(" SELECT * FROM tareas WHERE id_proyecto = ${idProyecto} ");
+
+        $tareas = $tareasPendientes->num_rows;
         
-        if($tareasPendientes->num_rows() > 0){
+        if($tareasPendientes->num_rows > 0){
             //Eliminamos todas las tareas pendientes
             $stmt = $conn->prepare(" DELETE FROM tareas WHERE id_proyecto = ? ");    
             $stmt->bind_param("i", $idProyecto);
@@ -77,16 +82,13 @@ else if($accion == "borrar"){
             
                     $respuesta = array(
                         "respuesta" => "correcto",
-                        "id_insertado" => $stmt->insert_id,
-                        "tipo" => $accion,
-                        "nombre_proyecto" => $proyecto
+                        "tipo" => $accion
                     );
         
                 }
 
                 //Cerramos la conexión
                 $stmt2->close();
-                $conn->close();
 
             }
 
@@ -94,9 +96,30 @@ else if($accion == "borrar"){
             $stmt->close();
             $conn->close();
 
-            echo json_encode($respuesta);
+        }else{
+            //Borramos el proyecto
+            $stmt = $conn->prepare(" DELETE FROM proyectos WHERE id = ? ");
+            $stmt->bind_param("i", $idProyecto);
 
-        }        
+            //Ejecutamos el delete
+            $stmt->execute();
+
+            //Mandamos nuestra respuesta en caso que se borre correctamente
+            if($stmt->affected_rows > 0){
+        
+                $respuesta = array(
+                    "respuesta" => "correcto",
+                    "tipo" => $accion
+                );
+    
+            }
+
+            //Cerramos la conexión
+            $stmt->close();
+            $conn->close();
+        }
+
+        echo json_encode($respuesta);
         
         
     }catch(Exception $e){

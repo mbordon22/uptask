@@ -98,6 +98,12 @@
                         <div id="porcentaje" class="porcentaje"></div>
                     </div>
         </div>
+
+
+        <!-- Boton eliminar proyecto -->
+        <button class="btn btn-danger" id="borrarProyecto">
+            Eliminar Proyecto
+        </button>
     </main>
 </div><!--.contenedor-->
 

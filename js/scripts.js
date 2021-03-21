@@ -2,52 +2,31 @@ eventListener();
 //Lista de proyectos
 var listaProyectos = document.querySelector("ul#proyectos");
 
-function eventListener(){
+function eventListener() {
     //Progreso del proyecto al ingresar
     document.addEventListener("DOMContentLoaded", progresoProyecto);
 
-
-    //Boton para agregar nuevo Proyecto.
-    document.querySelector(".crear-proyecto a").addEventListener("click", nuevoProyecto);
+    document.querySelector("#crearProyecto").addEventListener("click", guardarProyectoDB);
 
     //Boton para agregar nueva Tarea
-    if(document.querySelector(".nueva-tarea")){
+    if (document.querySelector(".nueva-tarea")) {
         document.querySelector(".nueva-tarea").addEventListener("click", nuevaTarea);
     }
-    
 
     //Botones para las acciones de las tareas
     document.querySelector(".listado-pendientes").addEventListener("click", accionesTarea);
+
+    //Eliminar proyecto
+    document.querySelector("#borrarProyecto").addEventListener("click", borrarProyecto);
 }
 
-function nuevoProyecto(e){
+
+function guardarProyectoDB(e) {
     e.preventDefault();
-
-    console.log("Presionaste para crear un nuevo proyecto");
+    //Recibimos las variables
     const idUsuario = document.querySelector("#idUsuario").value;
-    console.log(idUsuario);
+    const nombreProyecto = document.querySelector("#nombreProyecto").value;
 
-    //Crea un <input> para el nuevo proyecto
-    var nuevoProyecto = document.createElement("li");
-    nuevoProyecto.innerHTML = "<input type='text' id='nuevo-proyecto' autocomplete=OFF>";
-    listaProyectos.appendChild(nuevoProyecto);
-
-    //Selecciona el id con el nuevo proyecto
-    var inputNuevoProyecto = document.querySelector("#nuevo-proyecto");
-
-    //Al presionar enter crear el proyecto.
-    inputNuevoProyecto.addEventListener("keypress", function(e){
-
-        var tecla = e.which || e.keyCode;
-
-        if(tecla === 13){
-            guardarProyectoDB(inputNuevoProyecto.value, idUsuario);
-            listaProyectos.removeChild(nuevoProyecto);
-        }
-    });
-}
-
-function guardarProyectoDB(nombreProyecto, idUsuario){
     //Crear llamado a ajax
     var xhr = new XMLHttpRequest();
 
@@ -56,14 +35,14 @@ function guardarProyectoDB(nombreProyecto, idUsuario){
     datos.append("proyecto", nombreProyecto);
     datos.append("idUsuario", idUsuario);
     datos.append("accion", "crear");
-    
+
     //Abrir la conexion
     xhr.open("POST", "includes/modelos/modelo-proyecto.php", true);
 
     //En la carga
-    xhr.onload = function(){
-        if(this.status === 200){
-            
+    xhr.onload = function () {
+        if (this.status === 200) {
+
             //Obtener datos de la respuesta
             var respuesta = JSON.parse(xhr.responseText);
             var proyecto = respuesta.nombre_proyecto,
@@ -71,9 +50,9 @@ function guardarProyectoDB(nombreProyecto, idUsuario){
                 tipo = respuesta.tipo,
                 resultado = respuesta.respuesta;
 
-            if(resultado === "correcto"){
+            if (resultado === "correcto") {
                 //Fue exitoso.
-                if(tipo === "crear"){
+                if (tipo === "crear") {
                     //Se creo un nuevo proyecto.
                     //Inyectar en el HTML
                     var nuevoProyecto = document.createElement("li");
@@ -85,27 +64,27 @@ function guardarProyectoDB(nombreProyecto, idUsuario){
                     listaProyectos.appendChild(nuevoProyecto);
 
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Proyecto '+ proyecto + 'Creado',
-                        text: 'El proyecto fue creado correctamente',
-                      })
-                    .then(resultado => {
-                        if(resultado.value){
-                            //Redireccionar al nuevo proyecto
-                            window.location.href = "index.php?id_proyecto="+id_proyecto;
-                        }
-                    })
+                            icon: 'success',
+                            title: 'Proyecto ' + proyecto + 'Creado',
+                            text: 'El proyecto fue creado correctamente',
+                        })
+                        .then(resultado => {
+                            if (resultado.value) {
+                                //Redireccionar al nuevo proyecto
+                                window.location.href = "index.php?id_proyecto=" + id_proyecto;
+                            }
+                        })
 
-                }else{
+                } else {
                     //Se actualizo o se elimino
                 }
-            }else{
+            } else {
                 //Hubo un error.
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!!',
                     text: 'Hubo un error',
-                  });
+                });
             }
         }
     }
@@ -114,19 +93,20 @@ function guardarProyectoDB(nombreProyecto, idUsuario){
     xhr.send(datos);
 }
 
+
 //Funcion Agregar Tarea
-function nuevaTarea(e){
+function nuevaTarea(e) {
     e.preventDefault();
     var nombreTarea = document.querySelector(".nombre-tarea").value;
 
-    if(nombreTarea === ""){
+    if (nombreTarea === "") {
         //Mostramos mensaje de error.
         Swal.fire({
             icon: 'error',
             title: 'Error!!',
             text: 'La tarea no puede ir vacia',
-          });
-    }else{
+        });
+    } else {
         //Si el nombre de la tarea viene correctamente
         //Crear llamado a ajax
         var xhr = new XMLHttpRequest();
@@ -140,14 +120,14 @@ function nuevaTarea(e){
         xhr.open("POST", "includes/modelos/modelo-tarea.php", true);
 
         //Ejecutarlo y respuesta
-        xhr.onload = function(){
-            if(this.status === 200){
+        xhr.onload = function () {
+            if (this.status === 200) {
                 //Todo Correcto
                 var respuesta = JSON.parse(xhr.responseText);
 
-                if(respuesta.respuesta === "correcto"){
+                if (respuesta.respuesta === "correcto") {
                     //Se agregó correctamente
-                    if(respuesta.tipo === "crear"){
+                    if (respuesta.tipo === "crear") {
                         //Notificamos que se creo correctamente la tarea
                         Swal.fire({
                             icon: 'success',
@@ -158,7 +138,7 @@ function nuevaTarea(e){
                         //Si a una lista de tareas vacia se le agrega una tarea, eliminamos el parrafo de lista vacia.
                         var parrafoListaVacia = document.querySelectorAll(".lista-vacia");
 
-                        if(parrafoListaVacia.length > 0){
+                        if (parrafoListaVacia.length > 0) {
                             document.querySelector(".lista-vacia").remove();
                         }
 
@@ -189,13 +169,13 @@ function nuevaTarea(e){
 
 
                     }
-                }else{
+                } else {
                     //Hubo un error
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!!',
                         text: 'Hubo un error',
-                      });
+                    });
                 }
 
 
@@ -209,22 +189,26 @@ function nuevaTarea(e){
     }
 }
 
-function accionesTarea(e){
+
+//Funciones de las tareas
+function accionesTarea(e) {
     e.preventDefault();
-    
-    if(e.target.classList.contains("fa-check-circle")){
-        
-        if(e.target.classList.contains("completo")){    
+
+    //Si presionamos el icono para cambiar estado
+    if (e.target.classList.contains("fa-check-circle")) {
+
+        if (e.target.classList.contains("completo")) {
             e.target.classList.remove("completo");
             cambiarEstadoTarea(e.target, 0);
 
-        }else{
+        } else {
             e.target.classList.add("completo");
             cambiarEstadoTarea(e.target, 1);
         }
 
-    }else if(e.target.classList.contains("fa-trash")){
-        
+        //Si presionamos el icono para eliminar
+    } else if (e.target.classList.contains("fa-trash")) {
+
         Swal.fire({
             title: 'Estas Seguro/a?',
             text: "Esta acción no se puede deshacer.",
@@ -234,31 +218,31 @@ function accionesTarea(e){
             cancelButtonColor: '#d33',
             confirmButtonText: 'Si, borrar',
             cancelButtonText: 'Cancelar'
-          }).then((result) => {
+        }).then((result) => {
             if (result.isConfirmed) {
                 var tareaEliminada = e.target.parentElement.parentElement;
 
-              //Borrar de la BD
-              
-              EliminarTareaBD(tareaEliminada);
-              
-              //Borrar del HTML
-              tareaEliminada.remove();
+                //Borrar de la BD
 
-              Swal.fire(
-                'Borrado!',
-                'La tarea fue borrada.',
-                'success'
-              )
+                EliminarTareaBD(tareaEliminada);
+
+                //Borrar del HTML
+                tareaEliminada.remove();
+
+                Swal.fire(
+                    'Borrado!',
+                    'La tarea fue borrada.',
+                    'success'
+                )
             }
-          })
+        })
 
     }
 
 }
 
 //Cambiar estado de la tarea
-function cambiarEstadoTarea(tarea, estado){
+function cambiarEstadoTarea(tarea, estado) {
 
     var idTarea = tarea.parentElement.parentElement.id.split(":")[1];
 
@@ -275,8 +259,8 @@ function cambiarEstadoTarea(tarea, estado){
     xhr.open("POST", "includes/modelos/modelo-tarea.php", true);
 
     //onload
-    xhr.onload = function(){
-        if(this.status === 200){
+    xhr.onload = function () {
+        if (this.status === 200) {
             var respuesta = JSON.parse(xhr.responseText);
 
             //Cambiamos el progreso del proyecto
@@ -289,7 +273,7 @@ function cambiarEstadoTarea(tarea, estado){
 }
 
 //Eliminar una tarea de la bd
-function EliminarTareaBD(tarea){
+function EliminarTareaBD(tarea) {
     var idTarea = tarea.id.split(":")[1];
 
     //Crear llamado a ajax
@@ -304,14 +288,14 @@ function EliminarTareaBD(tarea){
     xhr.open("POST", "includes/modelos/modelo-tarea.php", true);
 
     //onload
-    xhr.onload = function(){
-        if(this.status === 200){
+    xhr.onload = function () {
+        if (this.status === 200) {
             var respuesta = JSON.parse(xhr.responseText);
             //console.log(respuesta);
 
             //Comprobamos si la lista esta vacia o no, en caso de que si mostramos un mensaje
             var listaTareasPendientes = document.querySelectorAll(".tarea");
-            if(listaTareasPendientes.length === 0){
+            if (listaTareasPendientes.length === 0) {
                 document.querySelector(".listado-pendientes ul").innerHTML = "<p class='lista-vacia'>No hay tareas en este proyecto.</p>";
             }
 
@@ -325,7 +309,7 @@ function EliminarTareaBD(tarea){
 }
 
 //Barra de progreso
-function progresoProyecto(){
+function progresoProyecto() {
     //Seleccionamos la cantidad de tareas
     const cantidadTareas = document.querySelectorAll(".tarea");
     console.log(cantidadTareas.length);
@@ -342,11 +326,87 @@ function progresoProyecto(){
     document.querySelector("#porcentaje").style.width = progresoActual + "%";
 
     //Si el proyecto esta terminado mostramos alerta
-    if(progresoActual === 100){
+    if (progresoActual === 100) {
         Swal.fire({
             icon: 'success',
             title: 'Proyecto Completado!!',
             text: 'Ya no tiene tareas pendientes',
-          });
+        });
     }
+}
+
+//Borrar Proyecto
+function borrarProyecto() {
+    //Guardamos los datos necesarios en variables
+    const idUsuario = document.querySelector("#idUsuario").value,
+        idProyecto = document.querySelector("#id_proyecto").value;
+
+    //Alerta para confirmar delete del proyecto        
+    Swal.fire({
+        title: '¿Eliminar proyecto?',
+        text: "Esta acción no se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, borrar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            //-----------------Borrar de la BD------------------
+
+            //Crear llamado a ajax
+            var xhr = new XMLHttpRequest();
+
+            //Enviar datos por formdata
+            var datos = new FormData();
+            datos.append("idProyecto", idProyecto);
+            datos.append("idUsuario", idUsuario);
+            datos.append("accion", "borrar");
+
+            //Abrir la conexion
+            xhr.open("POST", "includes/modelos/modelo-proyecto.php", true);
+
+            //En la carga
+            xhr.onload = function () {
+                if (this.status === 200) {
+
+                    //Obtener datos de la respuesta
+                    var respuesta = JSON.parse(xhr.responseText);
+                    var resultado = respuesta.respuesta;
+                    console.log(respuesta);
+
+                    if (resultado === "correcto") {
+                        //Fue exitoso.
+
+                        Swal.fire({
+                                icon: 'success',
+                                title: 'Proyecto eliminado',
+                                text: 'El proyecto fue eliminado correctamente',
+                            })
+                            .then(resultado => {
+                                if (resultado.value) {
+                                    //Redireccionar al inicio
+                                    window.location.href = "index.php";
+                                }
+                            })
+
+                    } else {
+                        //Hubo un error.
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!!',
+                            text: 'Hubo un error',
+                        });
+                    }
+                }
+            }
+
+            //Enviar el Request
+            xhr.send(datos);
+        }
+    })
+
+
 }
