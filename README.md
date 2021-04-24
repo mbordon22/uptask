@@ -1,3 +1,12 @@
 # uptask
-Uptask administrador de Proyectos, utilizando HTML, CSS para la maquetación del sitio web. Y JavaScript, AJAX, PHP, MYSQL para hacerlo dinámico.
-Su finalidad es la de administrar proyectos mediante una división de tareas. Ademas cada proyecto cuenta con una barra de progreso que nos va indicando cuantas tareas nos faltan para terminar dicho proyecto.
+##Administrador de Proyectos
+Aplicación web para administrar proyectos mediante una división de tareas. Incluye un login con el manejo de sesiones y ABM para eliminar tanto tareas como proyectos, como también cuenta con una barra de progreso que nos va indicando cuantas tareas nos faltan para terminar dicho proyecto.
+
+
+###La página fue creada con las siguientes tecnologías:  
++HTML  
++CSS  
++JavaScript  
++AJAX  
++PHP  
++MYSQL  
